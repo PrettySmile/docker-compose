@@ -1,0 +1,16 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    mem_limit: 1g
+    environment:
+      MYSQL_ROOT_PASSWORD: "Aa123456"
+      MYSQL_DATABASE: "rent-app"
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
