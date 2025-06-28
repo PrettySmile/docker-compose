@@ -2,6 +2,7 @@ services:
   mysql:
     image: mysql:8.0
     container_name: mysql
+    restart: always
     mem_limit: 1g
     environment:
       MYSQL_ROOT_PASSWORD: "Aa123456"
@@ -12,5 +13,40 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
 
+  redis:
+    image: redis
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    command:
+      ["mongod", "--replSet", "rs0", "--keyFile", "/data/db/mongo-keyfile"]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+    volumes:
+      - mongo_data:/data/db
+      - mongo_config:/data/configdb
+      - ./mongo-keyfile:/data/db/mongo-keyfile # 挂载 keyFile
+
+  chroma:
+    image: ghcr.io/chroma-core/chroma:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - IS_PERSISTENT=TRUE
+
 volumes:
   mysql_data:
+  redis_data:
+  mongo_data:
+  mongo_config:
